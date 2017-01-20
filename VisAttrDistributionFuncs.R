@@ -29,24 +29,6 @@ MyCountTheme = function(ggobj,title){
 ########################
 # Age Related
 #######################
-AgeFeaturePlot = function(df){
-  totals.by.feature <- df %>%
-    group_by(age,feature) %>%
-    summarise(counts=n())  
-  ggobj = df %>% 
-    group_by(age,feature,status) %>%
-    summarise(counts=n())%>%
-    ungroup() %>%
-    inner_join(totals.by.feature,by=c("age","feature")) %>%
-    
-    mutate(counts=counts.x/counts.y) %>%
-    #mutate(counts=counts/month.count) %>%
-    ggplot(aes(y=counts,x=age)) +
-    geom_bar(aes(fill=status), stat="identity") 
-  
-  MyCountTheme(ggobj, "Service Ratio \nChanges by Age")
-}
-
 AgeFeatureCountPlot = function(df){
   all_df = df %>% 
     group_by(age,feature,status) %>%
@@ -98,9 +80,9 @@ ExistedAgeFeatureRatioPlot = function(user_attr,user_item){
   MyCountTheme(ggobj, "Item Ratio \nChanges by Ages")
 }
 
-
-
-
+########################
+# Income Related
+#######################
 IncomeFeatureCountPlot = function(df){
   all_df = df %>% 
   mutate(renta = pmin(floor(renta/5e4),10)) %>%
@@ -130,18 +112,18 @@ IncomeFeatureRatioPlot = function(df){
     geom_bar(data = all_df,aes(y=counts,x=renta, fill=status), stat="identity", position = "fill") +  
     scale_fill_manual(values = c("Added" = "magenta", "Dropped" = "cyan", "magenta"))
   
-  MyCountTheme(ggobj, "Service ratio \nChanges by Income")
+  MyCountTheme(ggobj, "Item Ratio \nChanges by Income")
 }
 
 ExistedIncomeFeatureRatioPlot = function(user_attr,user_item){
   attr_df = user_attr  %>% 
-    mutate(renta = pmin(floor(renta/5e4),30)) %>%
+    mutate(renta = pmin(floor(renta/5e4),10)) %>%
     group_by(renta) %>%
     summarise(counts=n())%>%
     ungroup()
   
   item_df = user_item  %>% 
-    mutate(renta = pmin(floor(renta/5e4),30)) %>%
+    mutate(renta = pmin(floor(renta/5e4),10)) %>%
     group_by(renta,feature) %>%
     summarise(counts=n())%>%
     ungroup() %>%
@@ -149,7 +131,27 @@ ExistedIncomeFeatureRatioPlot = function(user_attr,user_item){
     mutate(counts = counts.x/counts.y)
   
   ggobj = ggplot() +
-    geom_bar(data = item_df,aes(y=counts,x=renta), stat="identity")  
+    geom_bar(data = item_df,aes(y=counts,x=renta, fill = "red"), stat="identity")  
   MyCountTheme(ggobj, "Service ratio \nChanges by Income")
 }
 
+########################
+# Holding Related
+#######################
+ExistedHoldFeatureRatioPlot = function(user_attr,user_item){
+  attr_df = user_attr  %>% 
+    group_by(antiguedad) %>%
+    summarise(counts=n())%>%
+    ungroup()
+  
+  item_df = user_item  %>% 
+    group_by(antiguedad,feature) %>%
+    summarise(counts=n())%>%
+    ungroup() %>%
+    inner_join(attr_df,by=c("antiguedad")) %>%
+    mutate(counts = counts.x/counts.y)
+  
+  ggobj = ggplot() +
+    geom_bar(data = item_df,aes(y=counts,x=antiguedad, fill = "red"), stat="identity")  
+  MyCountTheme(ggobj, "Item Ratio \nChanges by Holding time")
+}
