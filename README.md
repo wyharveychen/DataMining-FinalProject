@@ -15,7 +15,7 @@ gene_spm_data.R - generate data used in FIM and SPM
 ####Data####
 
 parsed_input.RData - the processed data of data_cleaning.Rmd  
-feature_table.csv - map feature abbrv. to meaning
+feature_table.csv - map feature abbrv. to meaning  
 Province map population.csv - province population referenced from wikipedia  
 Spain_province/ - spain province polygon as in [2]  
 
