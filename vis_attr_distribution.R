@@ -76,9 +76,7 @@ onehot_user_attr_item= user_attr  %>%
                       mutate(sexo = (sexo == 'H'))
 
 #1. Correlation between them
-png('visualization/attr_feature_corr.png', width = 600, height = 600)
 corrplot(cor(onehot_user_attr_item %>% subset(select = -ncodpers)) , method = "circle",tl.cex = 0.4)
-dev.off()
 
 #2. Income x item
 ExistedIncomeFeatureRatioPlot(user_attr,user_item);
